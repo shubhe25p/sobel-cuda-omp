@@ -83,15 +83,19 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
 void
 do_sobel_filtering(float *in, float *out, int ncols, int nrows)
 {
+   #pragma omp parallel 
+   {
    float Gx[] = {1.0, 0.0, -1.0, 2.0, 0.0, -2.0, 1.0, 0.0, -1.0};
    float Gy[] = {1.0, 2.0, 1.0, 0.0, 0.0, 0.0, -1.0, -2.0, -1.0};
 
    // ADD CODE HERE: insert your code here that iterates over every (i,j) of input,  makes a call
    // to sobel_filtered_pixel, and assigns the resulting value at location (i,j) in the output.
+   #pragma omp for
    for(int i=0;i<nrows;i++){
       for(int j=0;j<ncols;j++){
          out[i*ncols+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
       }
+   }
    }
 }
 
