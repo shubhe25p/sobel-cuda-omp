@@ -48,19 +48,20 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
 
    // ADD CODE HERE: add your code here for computing the sobel stencil computation at location (i,j)
    // of input s, returning a float
-   float gradx = (j - 1 >=0)? s[i * nrows + j - 1] * gx[3] : 0 + 
-                 (i - 1 >=0 && j -1 >=0) ? s[i * nrows + j - 1 - nrows] * gx[0] : 0 + 
-                 (i + 1 < nrows && j -1 >=0)? s[i * nrows + j - 1 + nrows] * gx[6] : 0 + 
-                 (j +1 <ncols)? s[i * nrows + j + 1] * gx[5] : 0+ //
-                 (i + 1 < nrows && j + 1 <ncols)? s[i * nrows + j + 1 + nrows] * gx[8] : 0 +
-                 (i - 1 >=0 && j + 1 <ncols)? s[i * nrows + j + 1 - nrows] * gx[2]: 0;
-   float grady = (i - 1 >=0) ? s[i * nrows + j - nrows] * gy[1] : 0 + 
-                 (i + 1 < nrows)? s[i * nrows + j + nrows] * gy[7] : 0 + 
-                 (i - 1 >=0 && j -1 >=0)? s[i * nrows + j - 1 - nrows] * gy[0] : 0 + 
-                 (i + 1 < nrows && j -1 >=0)? s[i * nrows + j - 1 + nrows] * gy[6] : 0 + 
-                 (i + 1 < nrows && j + 1 <ncols)? s[i * nrows + j + 1 + nrows] * gy[8] : 0 +
-                 (i - 1 >=0 && j + 1 <ncols)? s[i * nrows + j + 1 - nrows] * gy[2] : 0;
+   float gradx = ((j - 1 >= 0)? s[i * ncols + j - 1] * gx[3] : 0.0) + 
+                 ((i - 1 >=0 && j -1 >=0) ? s[i * ncols + j - 1 - ncols] * gx[0] : 0.0) + 
+                 ((i + 1 < nrows && j -1 >=0)? s[i * ncols + j - 1 + ncols] * gx[6] : 0.0) + 
+                 ((j + 1 <ncols)? s[i * ncols + j + 1] * gx[5] : 0.0) + 
+                 ((i + 1 < nrows && j + 1 <ncols)? s[i * ncols + j + 1 + ncols] * gx[8] : 0.0) +
+                ((i - 1 >=0 && j + 1 <ncols)? s[i * ncols + j + 1 - ncols] * gx[2]: 0.0);
 
+   float grady = ((i - 1 >=0) ? s[i * ncols + j - ncols] * gy[1] : 0.0) + 
+                 ((i + 1 < nrows)? s[i * ncols + j + ncols] * gy[7] : 0.0) + 
+                 ((i - 1 >=0 && j - 1 >=0)? s[i * ncols + j - 1 - ncols] * gy[0] : 0.0) + 
+                 ((i + 1 < nrows && j -1 >=0)? s[i * ncols + j - 1 + ncols] * gy[6] : 0.0) + 
+                 ((i + 1 < nrows && j + 1 <ncols)? s[i * ncols + j + 1 + ncols] * gy[8] : 0.0) +
+                 ((i - 1 >=0 && j + 1 <ncols)? s[i * ncols + j + 1 - ncols] * gy[2] : 0.0);
+   
    t = sqrt(pow(gradx, 2) + pow(grady, 2));
 
    return t;
@@ -89,7 +90,7 @@ do_sobel_filtering(float *in, float *out, int ncols, int nrows)
    // to sobel_filtered_pixel, and assigns the resulting value at location (i,j) in the output.
    for(int i=0;i<nrows;i++){
       for(int j=0;j<ncols;j++){
-         out[i*nrows+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
+         out[i*ncols+j] = sobel_filtered_pixel(in, i, j, ncols, nrows, Gx, Gy);
       }
    }
 }
