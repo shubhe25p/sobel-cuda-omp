@@ -63,6 +63,21 @@ sobel_filtered_pixel(float *s, int i, int j , int ncols, int nrows, float *gx, f
 
    // ADD CODE HERE:  add your code here for computing the sobel stencil computation at location (i,j)
    // of input s, returning a float
+   float gradx = ((j - 1 >= 0)? s[i * ncols + j - 1] * gx[3] : 0.0) + 
+                 ((i - 1 >=0 && j -1 >=0) ? s[i * ncols + j - 1 - ncols] * gx[0] : 0.0) + 
+                 ((i + 1 < nrows && j -1 >=0)? s[i * ncols + j - 1 + ncols] * gx[6] : 0.0) + 
+                 ((j + 1 <ncols)? s[i * ncols + j + 1] * gx[5] : 0.0) + 
+                 ((i + 1 < nrows && j + 1 <ncols)? s[i * ncols + j + 1 + ncols] * gx[8] : 0.0) +
+                ((i - 1 >=0 && j + 1 <ncols)? s[i * ncols + j + 1 - ncols] * gx[2]: 0.0);
+
+   float grady = ((i - 1 >=0) ? s[i * ncols + j - ncols] * gy[1] : 0.0) + 
+                 ((i + 1 < nrows)? s[i * ncols + j + ncols] * gy[7] : 0.0) + 
+                 ((i - 1 >=0 && j - 1 >=0)? s[i * ncols + j - 1 - ncols] * gy[0] : 0.0) + 
+                 ((i + 1 < nrows && j -1 >=0)? s[i * ncols + j - 1 + ncols] * gy[6] : 0.0) + 
+                 ((i + 1 < nrows && j + 1 <ncols)? s[i * ncols + j + 1 + ncols] * gy[8] : 0.0) +
+                 ((i - 1 >=0 && j + 1 <ncols)? s[i * ncols + j + 1 - ncols] * gy[2] : 0.0);
+   
+   t = sqrt(pow(gradx, 2) + pow(grady, 2));
 
    return t;
 }
@@ -92,7 +107,13 @@ sobel_kernel_gpu(float *s,  // source image pixels
 {
    // ADD CODE HERE: insert your code here that iterates over every (i,j) of input,  makes a call
    // to sobel_filtered_pixel, and assigns the resulting value at location (i,j) in the output.
-
+   int index = blockIdx.x * blockDim.x + threadIdx.x;
+   int stride = blockDim.x * gridDim.x;
+   for(int i=index;i<nrows;i+=stride){
+      for(int j=0;j<ncols;j++){
+         d[i*ncols+j] = sobel_filtered_pixel(s, i, j, ncols, nrows, gx, gy);
+      }
+   }
    // because this is CUDA, you need to use CUDA built-in variables to compute an index and stride
    // your processing motif will be very similar here to that we used for vector add in Lab #2
 }
