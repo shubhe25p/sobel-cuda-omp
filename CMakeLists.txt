@@ -7,9 +7,6 @@ project(sobel_harness LANGUAGES CXX CUDA)
 # module load PrgEnv-nvidia
 
 set(CMAKE_BUILD_TYPE "Release")
-set(CMAKE_C_COMPILER nvc)
-set(CMAKE_CXX_COMPILER nvc++)
-set(CMAKE_CUDA_COMPILER nvcc)
 
 add_executable(sobel_cpu sobel_cpu.cpp)
 target_compile_options(sobel_cpu PRIVATE -fopenmp -fast)
